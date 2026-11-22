@@ -22,17 +22,12 @@ export const Footer: React.FC = () => {
           {/* Brand Info */}
           <div className="md:col-span-1 space-y-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#4A3A85] flex items-center justify-center text-white font-bold text-xs">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4 fill-none stroke-white stroke-[2.5]"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-[#4A3A85] shrink-0 border border-[#B7A3F2] flex items-center justify-center">
+                <img
+                  src="/images/icone.jpg"
+                  alt={settings.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <span className="text-base font-bold font-heading text-[#4A3A85] tracking-tight">
                 {settings.name}

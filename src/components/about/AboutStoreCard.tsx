@@ -10,17 +10,12 @@ export const AboutStoreCard: React.FC = () => {
   return (
     <Card className="p-5 space-y-3 border-[1.5px] border-[#E7DFFB]">
       <div className="flex items-center gap-3">
-        <div className="w-11 h-11 rounded-2xl bg-[#4A3A85] flex items-center justify-center text-white shrink-0 shadow-xs border border-[#B7A3F2]">
-          <svg
-            viewBox="0 0 24 24"
-            className="w-5 h-5 fill-none stroke-white stroke-[2.5]"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5z" />
-            <path d="M2 17l10 5 10-5" />
-            <path d="M2 12l10 5 10-5" />
-          </svg>
+        <div className="w-11 h-11 rounded-full overflow-hidden bg-[#4A3A85] shrink-0 border border-[#B7A3F2] shadow-xs flex items-center justify-center">
+          <img
+            src="/images/icone.jpg"
+            alt={settings.name}
+            className="w-full h-full object-cover"
+          />
         </div>
         <div>
           <h2 className="text-base font-bold font-heading text-[#4A3A85] leading-tight">

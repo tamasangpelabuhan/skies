@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   title: "Skies by Nas — Toko Aplikasi Premium Terpercaya",
   description: "Semua aplikasi dalam satu tempat. Beli akun premium Netflix, Spotify, Canva Pro, YouTube Premium harga terjangkau dengan garansi penuh.",
   keywords: ["aplikasi premium", "netflix murah", "spotify premium", "canva pro", "youtube premium", "skies by nas"],
+  icons: {
+    icon: "/images/icone.jpg",
+    shortcut: "/images/icone.jpg",
+    apple: "/images/icone.jpg",
+  },
 };
 
 export const viewport: Viewport = {

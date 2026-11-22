@@ -22,17 +22,12 @@ export const HeaderMobile: React.FC = () => {
           href="/"
           className="flex items-center gap-2.5 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#4A3A85] flex items-center justify-center text-[#F5F1FF] font-black text-sm shadow-xs border border-[#B7A3F2] group-hover:scale-105 transition-transform">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 fill-none stroke-white stroke-[2.5]"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
+          <div className="w-9 h-9 rounded-full overflow-hidden bg-[#4A3A85] shrink-0 border border-[#B7A3F2] shadow-xs group-hover:scale-105 transition-transform flex items-center justify-center">
+            <img
+              src="/images/icone.jpg"
+              alt={settings.name}
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <span className="text-lg font-bold font-heading tracking-tight text-[#4A3A85] block leading-tight">
