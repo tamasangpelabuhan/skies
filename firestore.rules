@@ -24,5 +24,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null;
     }
+
+    // 5. Ulasan Produk: Publik bisa membaca ulasan dan menambahkan ulasan baru
+    match /reviews/{reviewId} {
+      allow read, create: if true;
+      allow update, delete: if request.auth != null;
+    }
   }
 }

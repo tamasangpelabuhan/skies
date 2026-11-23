@@ -1,22 +1,33 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import {
+  getPersistentData,
+  setPersistentData,
+  STORAGE_KEYS,
+} from '../lib/client-storage';
 
 export function useWishlistState(showToast: (msg: string) => void) {
-  const [wishlist, setWishlist] = useState<string[]>(['netflix']);
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const savedWishlist = localStorage.getItem('skies_wishlist');
-      if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-    } catch {}
+      const saved = getPersistentData<string[]>(STORAGE_KEYS.WISHLIST, ['netflix']);
+      setWishlist(Array.isArray(saved) ? saved : ['netflix']);
+    } catch {
+      setWishlist(['netflix']);
+    } finally {
+      setIsLoaded(true);
+    }
   }, []);
 
   useEffect(() => {
+    if (!isLoaded) return;
     try {
-      localStorage.setItem('skies_wishlist', JSON.stringify(wishlist));
+      setPersistentData(STORAGE_KEYS.WISHLIST, wishlist);
     } catch {}
-  }, [wishlist]);
+  }, [wishlist, isLoaded]);
 
   const toggleWishlist = (productId: string) => {
     setWishlist((prev) => {

@@ -8,9 +8,18 @@ import { CatalogSearchBar } from './catalog/CatalogSearchBar';
 import { CatalogFilterPills } from './catalog/CatalogFilterPills';
 import { CatalogProductCard } from './catalog/CatalogProductCard';
 import { CatalogEmptyState } from './catalog/CatalogEmptyState';
+import { ProductCardSkeleton } from './catalog/ProductCardSkeleton';
 
 export const CatalogView: React.FC = () => {
-  const { searchQuery, setSearchQuery, isWishlisted, wishlist, products, categories } = useStore();
+  const {
+    searchQuery,
+    setSearchQuery,
+    isWishlisted,
+    wishlist,
+    products,
+    categories,
+    isProductsLoading,
+  } = useStore();
   const [activeFilter, setActiveFilter] = useState<'all' | 'favorites' | CategoryId>('all');
 
   const currentProducts = products || [];
@@ -61,8 +70,22 @@ export const CatalogView: React.FC = () => {
         favoritesCount={wishlist.length}
       />
 
-      {/* Conditional Rendering: Sectioned or Single Grid */}
-      {isSearching || isFilteringSingle ? (
+      {/* Conditional Rendering: Loading Skeleton vs Sectioned vs Single Grid */}
+      {isProductsLoading ? (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[#7B6FA3]">
+              Memuat katalog produk...
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      ) : isSearching || isFilteringSingle ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#7B6FA3]">

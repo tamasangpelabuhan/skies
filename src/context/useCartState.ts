@@ -3,22 +3,55 @@
 import { useState, useEffect } from 'react';
 import { Product, ProductVariant } from '../types/product';
 import { CartItem } from '../types/cart';
+import {
+  getPersistentData,
+  setPersistentData,
+  STORAGE_KEYS,
+} from '../lib/client-storage';
 
 export function useCartState(showToast: (msg: string) => void) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // 1. Initial Load dari LocalStorage & Cookies
   useEffect(() => {
     try {
-      const savedCart = localStorage.getItem('skies_cart');
-      if (savedCart) setCart(JSON.parse(savedCart));
-    } catch {}
+      const saved = getPersistentData<CartItem[]>(STORAGE_KEYS.CART, []);
+      if (Array.isArray(saved) && saved.length > 0) {
+        setCart(saved);
+      }
+    } catch (e) {
+      console.warn('Error loading cart from storage:', e);
+    } finally {
+      setIsLoaded(true);
+    }
   }, []);
 
+  // 2. Simpan setiap kali cart berubah, hanya setelah inisialisasi selesai
   useEffect(() => {
+    if (!isLoaded) return;
     try {
-      localStorage.setItem('skies_cart', JSON.stringify(cart));
-    } catch {}
-  }, [cart]);
+      setPersistentData(STORAGE_KEYS.CART, cart);
+    } catch (e) {
+      console.warn('Error saving cart to storage:', e);
+    }
+  }, [cart, isLoaded]);
+
+  // 3. Sinkronisasi multi-tab browser
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.CART && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed)) {
+            setCart(parsed);
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const addToCart = (product: Product, variant: ProductVariant, quantity = 1) => {
     setCart((prev) => {

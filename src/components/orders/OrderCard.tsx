@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Star } from 'lucide-react';
 import { CustomerOrder, OrderStatus } from '../../types/order';
 import { Card } from '../ui/card';
 import { AppLogo } from '../AppLogo';
@@ -9,12 +10,14 @@ interface OrderCardProps {
   order: CustomerOrder;
   onPayNow: (order: CustomerOrder) => void;
   onViewDetails: (order: CustomerOrder) => void;
+  onReviewOrder?: (order: CustomerOrder) => void;
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
   onPayNow,
   onViewDetails,
+  onReviewOrder,
 }) => {
   const firstItem = order.items[0];
   const logo =
@@ -100,6 +103,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             className="flex-1 py-2 px-3 rounded-full bg-[#4A3A85] text-[#F5F1FF] hover:bg-[#3d2f70] text-xs font-extrabold active:scale-95 transition-all cursor-pointer shadow-xs"
           >
             Bayar sekarang
+          </button>
+        )}
+
+        {order.status === 'Selesai' && onReviewOrder && (
+          <button
+            onClick={() => onReviewOrder(order)}
+            className="flex-1 py-2 px-3 rounded-full bg-[#FFE59A] text-[#2F2552] border border-[#FFE59A] hover:bg-[#ffe082] text-xs font-extrabold active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+          >
+            <Star className="w-3.5 h-3.5 fill-[#F3B62E] text-[#F3B62E]" />
+            <span>Beri ulasan</span>
           </button>
         )}
 

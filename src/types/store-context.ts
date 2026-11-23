@@ -5,6 +5,7 @@ import {
   CustomerOrder,
   CartItem,
   CheckoutCustomerData,
+  ProductReview,
 } from './index';
 import { Category } from '../data/categories';
 import { StoreSettings } from './settings';
@@ -19,6 +20,7 @@ export interface StoreContextType {
   selectedProduct: Product | null;
   setSelectedProduct: (product: Product | null) => void;
   products: Product[];
+  isProductsLoading: boolean;
   addProduct: (product: Product) => void;
   updateProduct: (productId: string, updated: Partial<Product>) => void;
   deleteProduct: (productId: string) => void;
@@ -59,4 +61,16 @@ export interface StoreContextType {
   toastMessage: string | null;
   settings: StoreSettings;
   updateSettings: (newSettings: Partial<StoreSettings>) => Promise<void>;
+  reviews: ProductReview[];
+  addReview: (data: Omit<ProductReview, 'id' | 'createdAt'>) => Promise<ProductReview>;
+  getProductReviews: (productId: string) => ProductReview[];
+  getProductRating: (productId: string) => { rating: number; count: number };
+  isReviewModalOpen: boolean;
+  setIsReviewModalOpen: (open: boolean) => void;
+  reviewTargetOrder: CustomerOrder | null;
+  setReviewTargetOrder: (order: CustomerOrder | null) => void;
+  reviewTargetProduct: Product | null;
+  setReviewTargetProduct: (product: Product | null) => void;
+  openReviewModalForOrder: (order: CustomerOrder) => void;
+  openReviewModalForProduct: (product: Product) => void;
 }

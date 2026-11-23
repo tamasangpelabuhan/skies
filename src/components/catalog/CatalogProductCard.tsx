@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 import { Product } from '../../types/product';
 import { useStore } from '../../context/StoreContext';
 import { AppLogo } from '../AppLogo';
@@ -12,8 +12,9 @@ interface CatalogProductCardProps {
 }
 
 export const CatalogProductCard: React.FC<CatalogProductCardProps> = ({ product }) => {
-  const { toggleWishlist, isWishlisted } = useStore();
+  const { toggleWishlist, isWishlisted, getProductRating } = useStore();
   const favorited = isWishlisted(product.id);
+  const { rating, count } = getProductRating(product.id || product.slug);
 
   return (
     <Link
@@ -56,9 +57,17 @@ export const CatalogProductCard: React.FC<CatalogProductCardProps> = ({ product 
           {product.categoryLabel}
         </span>
 
-        <span className="text-xs md:text-sm font-extrabold text-[#4A3A85] block mt-2">
-          Mulai Rp{product.price.toLocaleString('id-ID')}
-        </span>
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E7DFFB]/60">
+          <span className="text-xs md:text-sm font-extrabold text-[#4A3A85]">
+            Mulai Rp{product.price.toLocaleString('id-ID')}
+          </span>
+
+          <div className="flex items-center gap-1 text-[11px] font-bold text-[#F3B62E]">
+            <Star className="w-3 h-3 fill-[#F3B62E] text-[#F3B62E]" />
+            <span className="text-[#2F2552]">{rating.toFixed(1)}</span>
+            <span className="text-[10px] text-[#7B6FA3]">({count})</span>
+          </div>
+        </div>
       </div>
     </Link>
   );

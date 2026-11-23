@@ -10,7 +10,7 @@ import { OrderHelpCard } from './orders/OrderHelpCard';
 import { OrderCredentialsModal } from './orders/OrderCredentialsModal';
 
 export const OrdersView: React.FC = () => {
-  const { orders, settings } = useStore();
+  const { orders, settings, openReviewModalForOrder } = useStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | OrderStatus>('all');
   const [selectedOrder, setSelectedOrder] = useState<CustomerOrder | null>(null);
@@ -81,6 +81,7 @@ export const OrdersView: React.FC = () => {
               order={order}
               onPayNow={handlePayNow}
               onViewDetails={setSelectedOrder}
+              onReviewOrder={openReviewModalForOrder}
             />
           ))}
         </div>

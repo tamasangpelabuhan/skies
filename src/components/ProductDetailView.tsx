@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { PackageOpen } from 'lucide-react';
+import { PackageOpen, Star, ShieldCheck } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { ProductVariant } from '../types/product';
 import { ProductHeader } from './product/ProductHeader';
@@ -13,7 +13,14 @@ import { Card } from './ui/card';
 
 export const ProductDetailView: React.FC<{ slug: string }> = ({ slug }) => {
   const router = useRouter();
-  const { addToCart, initiateSingleCheckout, products } = useStore();
+  const {
+    addToCart,
+    initiateSingleCheckout,
+    products,
+    getProductReviews,
+    getProductRating,
+    openReviewModalForProduct,
+  } = useStore();
 
   const currentProducts = products || [];
   const product = currentProducts.find((p) => p.slug === slug || p.id === slug);
@@ -91,6 +98,87 @@ export const ProductDetailView: React.FC<{ slug: string }> = ({ slug }) => {
             </div>
           )}
         </Card>
+
+        {/* Ulasan & Rating Pelanggan */}
+        {(() => {
+          const productReviews = getProductReviews(product.id || product.slug);
+          const { rating: productRating, count: productCount } = getProductRating(product.id || product.slug);
+
+          return (
+            <Card className="rounded-[24px] p-5 space-y-4 border-[1.5px] border-[#E7DFFB]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E7DFFB]/60">
+                <div>
+                  <h3 className="text-xs font-bold font-heading text-[#4A3A85] uppercase tracking-wider">
+                    Ulasan Pelanggan
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-1 text-[#F3B62E]">
+                      <Star className="w-4 h-4 fill-[#F3B62E] text-[#F3B62E]" />
+                      <span className="text-sm font-black font-heading text-[#2F2552]">
+                        {productRating.toFixed(1)}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#7B6FA3] font-semibold">
+                      • ({productReviews.length || productCount} ulasan)
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => openReviewModalForProduct(product)}
+                  className="px-3.5 py-1.5 rounded-full bg-[#FFF4CC] border border-[#FFE59A] hover:bg-[#ffe59a] text-xs font-bold text-[#2F2552] active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                >
+                  <Star className="w-3.5 h-3.5 fill-[#F3B62E] text-[#F3B62E]" />
+                  <span>Tulis ulasan</span>
+                </button>
+              </div>
+
+              {productReviews.length > 0 ? (
+                <div className="space-y-3">
+                  {productReviews.map((rev) => (
+                    <div
+                      key={rev.id}
+                      className="p-3.5 rounded-2xl bg-[#F5F1FF]/60 border border-[#E7DFFB]/70 space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-[#2F2552]">
+                            {rev.customerName}
+                          </span>
+                          {rev.verified && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#E8F8EE] text-[#1C6D41] text-[9px] font-extrabold border border-[#BDE8CD]">
+                              <ShieldCheck className="w-2.5 h-2.5" />
+                              <span>Terverifikasi</span>
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-[#7B6FA3] font-semibold">
+                          {rev.createdAt}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-0.5 text-[#F3B62E]">
+                        {[...Array(rev.rating)].map((_, i) => (
+                          <Star key={i} className="w-3 h-3 fill-[#F3B62E] text-[#F3B62E]" />
+                        ))}
+                      </div>
+
+                      <p className="text-xs text-[#2F2552]/90 leading-relaxed font-medium">
+                        {rev.comment}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 text-xs text-[#7B6FA3] space-y-1">
+                  <p className="font-bold text-[#2F2552]">Belum ada ulasan untuk produk ini</p>
+                  <p>Jadilah orang pertama yang memberikan ulasan!</p>
+                </div>
+              )}
+            </Card>
+          );
+        })()}
       </div>
 
       {activeVariant && (

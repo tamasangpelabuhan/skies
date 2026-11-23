@@ -5,12 +5,38 @@ import Link from 'next/link';
 import { Heart, Star, ArrowRight, PackageOpen } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { AppLogo } from './AppLogo';
+import { ProductCardSkeleton } from './catalog/ProductCardSkeleton';
 
 export const FeaturedProducts: React.FC = () => {
-  const { products, toggleWishlist, isWishlisted } = useStore();
+  const { products, isProductsLoading, toggleWishlist, isWishlisted, getProductRating } = useStore();
   const currentProducts = products || [];
   const featured = currentProducts.slice(0, 4);
 
+  // 1. Loading Skeleton State (shadcn UI skeleton cards)
+  if (isProductsLoading) {
+    return (
+      <section className="py-3">
+        <div className="flex items-center justify-between mb-3.5">
+          <div>
+            <h2 className="text-lg md:text-xl font-bold font-heading text-[#4A3A85] tracking-tight">
+              Produk unggulan
+            </h2>
+            <p className="text-xs text-[#7B6FA3] mt-0.5">
+              Aplikasi paling banyak dipesan dengan garansi terbaik
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  // 2. Empty State (only after loading is complete and genuinely empty)
   if (featured.length === 0) {
     return (
       <section className="py-3">
@@ -59,6 +85,7 @@ export const FeaturedProducts: React.FC = () => {
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
         {featured.map((product) => {
           const favorited = isWishlisted(product.id);
+          const ratingInfo = getProductRating(product.id || product.slug);
 
           return (
             <Link
@@ -106,7 +133,8 @@ export const FeaturedProducts: React.FC = () => {
 
                   <div className="flex items-center gap-1 text-[11px] font-bold text-[#F3B62E]">
                     <Star className="w-3 h-3 fill-[#F3B62E] text-[#F3B62E]" />
-                    <span className="text-[#2F2552]">{product.rating.toFixed(1)}</span>
+                    <span className="text-[#2F2552]">{ratingInfo.rating.toFixed(1)}</span>
+                    <span className="text-[10px] text-[#7B6FA3]">({ratingInfo.count})</span>
                   </div>
                 </div>
               </div>

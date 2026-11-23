@@ -9,6 +9,7 @@ import { CartDrawer } from './CartDrawer';
 import { CheckoutModal } from './CheckoutModal';
 import { WishlistModal } from './WishlistModal';
 import { NotificationsModal } from './NotificationsModal';
+import { ReviewModalWrapper } from './ReviewModalWrapper';
 import { Toast } from './Toast';
 
 const AppShellInner: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -56,6 +57,7 @@ const AppShellInner: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       <CheckoutModal />
       <WishlistModal />
       <NotificationsModal />
+      <ReviewModalWrapper />
     </div>
   );
 };

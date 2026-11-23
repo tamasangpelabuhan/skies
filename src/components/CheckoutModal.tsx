@@ -1,11 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { CheckoutModalSuccess } from './modals/CheckoutModalSuccess';
 import { CheckoutModalForm } from './modals/CheckoutModalForm';
+import {
+  getPersistentData,
+  setPersistentData,
+  STORAGE_KEYS,
+} from '../lib/client-storage';
 
 export const CheckoutModal: React.FC = () => {
   const router = useRouter();
@@ -23,6 +28,19 @@ export const CheckoutModal: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState('QRIS (Semua E-Wallet & M-Banking)');
   const [isSuccess, setIsSuccess] = useState(false);
   const [createdInvoice, setCreatedInvoice] = useState('');
+
+  // Auto-restore customer profile on mount
+  useEffect(() => {
+    try {
+      const profile = getPersistentData<{ name?: string; whatsapp?: string; email?: string }>(
+        STORAGE_KEYS.CUSTOMER_PROFILE,
+        {}
+      );
+      if (profile.name) setName(profile.name);
+      if (profile.whatsapp) setWhatsapp(profile.whatsapp);
+      if (profile.email) setEmail(profile.email);
+    } catch {}
+  }, [isCheckoutModalOpen]);
 
   if (!isCheckoutModalOpen) return null;
 

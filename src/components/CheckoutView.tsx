@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useStore } from '../context/StoreContext';
 import { CheckoutHeader } from './checkout/CheckoutHeader';
@@ -11,6 +11,11 @@ import { CheckoutPaymentMethod } from './checkout/CheckoutPaymentMethod';
 import { CheckoutSuccessView } from './checkout/CheckoutSuccessView';
 import { CheckoutStickyBar } from './checkout/CheckoutStickyBar';
 import { CheckoutEmptyState } from './checkout/CheckoutEmptyState';
+import {
+  getPersistentData,
+  setPersistentData,
+  STORAGE_KEYS,
+} from '../lib/client-storage';
 
 const PAYMENT_OPTIONS = [
   { id: 'qris', name: 'QRIS', label: 'QRIS (Semua E-Wallet & M-Banking)' },
@@ -39,6 +44,34 @@ function CheckoutContent() {
   const [paymentMethod, setPaymentMethod] = useState('QRIS');
   const [currentStep, setCurrentStep] = useState<2 | 3>(2);
   const [createdInvoice, setCreatedInvoice] = useState('');
+
+  // Auto-restore customer profile from local storage / cookies on mount
+  useEffect(() => {
+    try {
+      const profile = getPersistentData<{ name?: string; whatsapp?: string; email?: string }>(
+        STORAGE_KEYS.CUSTOMER_PROFILE,
+        {}
+      );
+      if (profile.name) setName(profile.name);
+      if (profile.whatsapp) setWhatsapp(profile.whatsapp);
+      if (profile.email) setEmail(profile.email);
+    } catch {}
+  }, []);
+
+  const handleNameChange = (v: string) => {
+    setName(v);
+    setPersistentData(STORAGE_KEYS.CUSTOMER_PROFILE, { name: v, whatsapp, email });
+  };
+
+  const handleWhatsappChange = (v: string) => {
+    setWhatsapp(v);
+    setPersistentData(STORAGE_KEYS.CUSTOMER_PROFILE, { name, whatsapp: v, email });
+  };
+
+  const handleEmailChange = (v: string) => {
+    setEmail(v);
+    setPersistentData(STORAGE_KEYS.CUSTOMER_PROFILE, { name, whatsapp, email: v });
+  };
 
   if (!targetProduct) {
     return <CheckoutEmptyState />;
@@ -99,11 +132,11 @@ function CheckoutContent() {
 
             <CheckoutBuyerForm
               name={name}
-              setName={setName}
+              setName={handleNameChange}
               whatsapp={whatsapp}
-              setWhatsapp={setWhatsapp}
+              setWhatsapp={handleWhatsappChange}
               email={email}
-              setEmail={setEmail}
+              setEmail={handleEmailChange}
               notes={notes}
               setNotes={setNotes}
             />
